@@ -7,6 +7,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.service.ServiceRegistry;
 
+import javax.persistence.EntityManager;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -16,6 +17,8 @@ import java.util.Properties;
 public class Util {
 
     private static SessionFactory sessionFactory;
+
+    private static EntityManager entityManager;
 
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {

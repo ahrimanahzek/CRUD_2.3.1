@@ -119,7 +119,36 @@ public class UserDaoHibernateImpl implements UserDao {
     }
 
     @Override
-    public void saveUser(String name, String lastName, byte age) {
+    public void saveUser(User user) {
+        Transaction transaction = null;
+
+        Session session = Util.getSessionFactory().openSession();
+
+        // auto close session object
+        try {
+
+            // start the transaction
+            transaction = session.beginTransaction();
+
+            // save student object
+            if(user.getId() > 0) {
+                session.update(user);
+            } else {
+                session.save(user);
+            }
+
+            // commit transction
+            transaction.commit();
+            session.close();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        }
+    }
+
+    @Override
+    public void addUser(String name, String lastName, byte age) {
 
         Transaction transaction = null;
 
@@ -156,7 +185,7 @@ public class UserDaoHibernateImpl implements UserDao {
         Session session = Util.getSessionFactory().openSession();
 
         User user = new User();
-        //user.setId(id);
+        user.setId(id);
 
         // auto close session object
         try {
@@ -212,5 +241,11 @@ public class UserDaoHibernateImpl implements UserDao {
                 transaction.rollback();
             }
         }
+    }
+
+    @Override
+    public User show(long id) {
+        List<User> users = getAllUsers();
+        return users.stream().filter(user -> user.getId() == id).findAny().orElse(null);
     }
 }

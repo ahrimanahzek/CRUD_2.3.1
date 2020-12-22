@@ -2,9 +2,11 @@ package jm.task.crud.service;
 import jm.task.crud.dao.*;
 
 import jm.task.crud.model.*;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class UserServiceImpl implements UserService {
 
     UserDao userDao;
@@ -25,9 +27,15 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    public void saveUser(String name, String lastName, byte age) {
+    public void saveUser(User user) {
 
-        userDao.saveUser(name, lastName, age);
+        userDao.saveUser(user);
+
+    }
+
+    public void addUser(String name, String lastName, byte age) {
+
+        userDao.addUser(name, lastName, age);
 
     }
 
@@ -43,5 +51,10 @@ public class UserServiceImpl implements UserService {
 
     public void cleanUsersTable() {
         userDao.cleanUsersTable();
+    }
+
+    @Override
+    public User show(long id) {
+        return userDao.show(id);
     }
 }
