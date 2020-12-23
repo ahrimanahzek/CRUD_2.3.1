@@ -20,8 +20,9 @@ public class Util {
 
     private static EntityManager entityManager;
 
-    public static SessionFactory getSessionFactory() {
-        if (sessionFactory == null) {
+    public static EntityManager getSessionFactory() {
+        //if (sessionFactory == null) {
+        if(entityManager == null) {
             try {
                 Configuration configuration = new Configuration();
 
@@ -46,12 +47,14 @@ public class Util {
                 ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                         .applySettings(configuration.getProperties()).build();
 
-                sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+                //sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+                entityManager = configuration.buildSessionFactory(serviceRegistry).createEntityManager();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return sessionFactory;
+        //return sessionFactory;
+        return entityManager;
     }
 
     static String URL = "jdbc:mysql://localhost:3306/testdb";

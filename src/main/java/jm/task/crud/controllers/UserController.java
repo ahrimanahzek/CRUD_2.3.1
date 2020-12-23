@@ -37,6 +37,19 @@ public class UserController {
         return "user/show";
     }
 
+    @GetMapping("/new")
+    public String newPerson(Model model) {
+        model.addAttribute("user", new User());
+
+        return "user/new";
+    }
+
+    @PostMapping()
+    public String create(@ModelAttribute("user") User user) {
+        userService.saveUser(user);
+        return "redirect:/user";
+    }
+
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") long id, Model model) {
         model.addAttribute("user", userService.show(id));

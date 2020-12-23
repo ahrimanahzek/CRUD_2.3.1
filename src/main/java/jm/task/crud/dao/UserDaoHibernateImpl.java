@@ -3,7 +3,6 @@ package jm.task.crud.dao;
 import jm.task.crud.model.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -13,6 +12,9 @@ import java.util.List;
 
 import jm.task.crud.util.*;
 import org.springframework.stereotype.Component;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 @Component
 public class UserDaoHibernateImpl implements UserDao {
@@ -69,11 +71,11 @@ public class UserDaoHibernateImpl implements UserDao {
             }
             throwables.printStackTrace();
         } finally {
-            try {
+/*            try {
                 connection.close();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
-            }
+            }*/
         }
     }
 
@@ -110,11 +112,11 @@ public class UserDaoHibernateImpl implements UserDao {
             }
             throwables.printStackTrace();
         } finally {
-            try {
+/*            try {
                 connection.close();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
-            }
+            }*/
         }
     }
 
@@ -122,27 +124,27 @@ public class UserDaoHibernateImpl implements UserDao {
     public void saveUser(User user) {
         Transaction transaction = null;
 
-        Session session = Util.getSessionFactory().openSession();
-
+        //Session session = Util.getSessionFactory().openSession();
+        EntityManager em = Util.getSessionFactory();
         // auto close session object
         try {
 
             // start the transaction
-            transaction = session.beginTransaction();
+            em.getTransaction().begin();
 
             // save student object
             if(user.getId() > 0) {
-                session.update(user);
+                em.persist(user);
             } else {
-                session.save(user);
+                em.persist(user);
             }
 
             // commit transction
-            transaction.commit();
-            session.close();
+            em.getTransaction().commit();
+           // em.close();
         } catch (Exception e) {
             if (transaction != null) {
-                transaction.rollback();
+                em.getTransaction().rollback();
             }
         }
     }
@@ -152,7 +154,8 @@ public class UserDaoHibernateImpl implements UserDao {
 
         Transaction transaction = null;
 
-        Session session = Util.getSessionFactory().openSession();
+        //Session session = Util.getSessionFactory().openSession();
+        EntityManager em = Util.getSessionFactory();
 
         User user = new User();
         user.setName(name);
@@ -162,18 +165,27 @@ public class UserDaoHibernateImpl implements UserDao {
         // auto close session object
         try {
 
+            em.getTransaction().begin();
+            em.persist(user);
+            em.getTransaction().commit();
+
             // start the transaction
-            transaction = session.beginTransaction();
+            //transaction = session.beginTransaction();
 
             // save student object
-            session.save(user);
+            //session.save(user);
+/*            String hql = "insert into User (name, lastName, age) " +
+                    "select 'oleg', 'Олег' from User";
+            int rows = session.createQuery (hql).executeUpdate();
+            System.out.println("rows : " + rows);*/
+
 
             // commit transction
-            transaction.commit();
-            session.close();
+            //transaction.commit();
+           // em.close();
         } catch (Exception e) {
             if (transaction != null) {
-                transaction.rollback();
+                em.getTransaction().rollback();
             }
         }
     }
@@ -182,25 +194,34 @@ public class UserDaoHibernateImpl implements UserDao {
     public void removeUserById(long id) {
         Transaction transaction = null;
 
-        Session session = Util.getSessionFactory().openSession();
+        //Session session = Util.getSessionFactory().openSession();
+        EntityManager em = Util.getSessionFactory();
 
-        User user = new User();
-        user.setId(id);
+/*        User user = new User();
+        user.setId(id);*/
+
+        User user = show(id);
 
         // auto close session object
         try {
 
             // start the transaction
-            transaction = session.beginTransaction();
+             em.getTransaction().begin();
 
             // save student object
-            session.delete(user);
+            //session.delete(user);
+            ///session.createQuery("DELETE User WHERE login = :lg");
+            em.remove(user);
+/*            String hql = "DELETE User WHERE id = :lg";
+            Query query = session.createQuery(hql);
+            query.setParameter("lg", id);
+            int rows = query.executeUpdate();*/
 
             // commit transction
-            transaction.commit();
+            em.getTransaction().commit();
         } catch (Exception e) {
             if (transaction != null) {
-                transaction.rollback();
+                em.getTransaction().rollback();
             }
         }
     }
@@ -208,11 +229,12 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public List<User> getAllUsers() {
 
-        Session session = Util.getSessionFactory().openSession();
+        //Session session = Util.getSessionFactory().openSession();
+        EntityManager session = Util.getSessionFactory();
 
         Query q = session.createQuery("From User");
 
-        List<User> resultList = q.list();
+        List<User> resultList = q.getResultList();//.list();
 
         return resultList;
     }
@@ -221,13 +243,14 @@ public class UserDaoHibernateImpl implements UserDao {
     public void cleanUsersTable() {
         Transaction transaction = null;
 
-        Session session = Util.getSessionFactory().openSession();
+        //Session session = Util.getSessionFactory().openSession();
+        EntityManager session = Util.getSessionFactory();
 
         // auto close session object
         try {
 
             // start the transaction
-            transaction = session.beginTransaction();
+            //transaction = session..beginTransaction();
 
             // save student object
             //session.delete(user);
