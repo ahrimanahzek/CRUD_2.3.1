@@ -1,7 +1,7 @@
 package jm.task.crud.dao;
 
+import jm.task.crud.util.Util;
 import jm.task.crud.model.*;
-import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.sql.Connection;
@@ -10,13 +10,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-import jm.task.crud.util.*;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-@Component
+@Repository
 public class UserDaoHibernateImpl implements UserDao {
 
     String sqlQueryCreateTable = "CREATE TABLE IF NOT EXISTS `testdb`.`users` (\n" +
